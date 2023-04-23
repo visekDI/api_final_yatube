@@ -1,14 +1,11 @@
-from rest_framework import viewsets, filters, pagination
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from django.shortcuts import get_object_or_404
+from rest_framework import filters, pagination, viewsets
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
-from api.serializers import (
-    CommentSerializer,
-    GroupSerializer,
-    PostSerializer,
-    FollowSerializer
-)
+from api.serializers import (CommentSerializer, FollowSerializer,
+                             GroupSerializer, PostSerializer)
 from posts.models import Group, Post
+
 from .permissions import IsAuthorOrReadOnlyPermission
 
 
@@ -25,7 +22,7 @@ class FollowViewSet(viewsets.ModelViewSet):
 
 
 class PostViewSet(viewsets.ModelViewSet):
-    queryset = Post.objects.all()
+    queryset = Post.objects.select_related('author')
     serializer_class = PostSerializer
     permission_classes = [IsAuthorOrReadOnlyPermission,
                           IsAuthenticatedOrReadOnly]
